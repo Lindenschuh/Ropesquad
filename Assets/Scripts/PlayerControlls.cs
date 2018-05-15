@@ -55,12 +55,12 @@ public class PlayerControlls : MonoBehaviour
         // Einziehen
         if (_joyManager.CheckButton(JoystickButton.BUMPER_L, Input.GetButton))
         {
-            Rope.UpdateWinch(Rope.RopeLength - Rope.WinchSpeed * Time.deltaTime, tower.position, _radius, PlayerNumber);
+            Rope.UpdateWinch(Rope.RopeLength - Rope.WinchSpeed * Time.fixedDeltaTime, tower.position, _radius, PlayerNumber);
         }
         // Seil lassen;
         if (_joyManager.CheckButton(JoystickButton.BUMPER_R, Input.GetButton))
         {
-            Rope.UpdateWinch(Rope.RopeLength + Rope.WinchSpeed * Time.deltaTime, tower.position, _radius, PlayerNumber);
+            Rope.UpdateWinch(Rope.RopeLength + Rope.WinchSpeed * Time.fixedDeltaTime, tower.position, _radius, PlayerNumber);
         }
     }
 
@@ -71,7 +71,7 @@ public class PlayerControlls : MonoBehaviour
         var playerRadius = _radius + CharacterOffset;
 
         Vector3 oldPosition = transform.position;
-        transform.RotateAround(tower.position, Vector3.up, h * Speed * Time.deltaTime);
+        transform.RotateAround(tower.position, Vector3.up, h * Speed * Time.fixedDeltaTime);
 
         if (!Rope.CheckNewPosition(transform.position, PlayerNumber))
         {
