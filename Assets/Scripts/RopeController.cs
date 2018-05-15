@@ -11,7 +11,6 @@ public class RopeController : MonoBehaviour
 
     public List<Vector3> RopeSections;
 
-    [Range(1f, 20f)]
     public float RopeLength = 1f;
 
     public float MinRopeLength = 1f;
@@ -64,16 +63,26 @@ public class RopeController : MonoBehaviour
         springJoint.maxDistance = RopeLength;
     }
 
-    public void UpdateWinch(float newLength)
+    public void UpdateWinch(float newLength, Vector3 center, float radius, byte playerNumber)
     {
+        var oldRopeLentgh = RopeLength;
         RopeLength = Mathf.Clamp(newLength, MinRopeLength, MaxRopeLength);
 
-        UpdateSpring();
-    }
+        if ((ConnectionOne.position - ConnectionTwo.position).magnitude > RopeLength)
+        {
+            if (playerNumber == 1)
+            {
+                var ropeDelta = oldRopeLentgh - RopeLength;
+                ConnectionOne.position = ConnectionOne.position - (ConnectionOne.position - ConnectionTwo.position).normalized * ropeDelta;
+            }
+            else
+            {
+                var ropeDelta = oldRopeLentgh - RopeLength;
+                ConnectionOne.position = ConnectionOne.position - (ConnectionOne.position - ConnectionTwo.position).normalized * ropeDelta;
+            }
+        }
 
-    public bool IsOnMaxLength()
-    {
-        return (ConnectionOne.position - ConnectionTwo.position).magnitude >= RopeLength;
+        UpdateSpring();
     }
 
     public bool CheckNewPosition(Vector3 newPos, byte player)

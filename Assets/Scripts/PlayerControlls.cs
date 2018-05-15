@@ -66,23 +66,23 @@ public class PlayerControlls : MonoBehaviour
     // Update is called once per frame
     private void Update()
     {
+        RopeInteraction();
         Movement();
         Jumping();
-        RopeInteraction();
         CheckPosition();
     }
 
     private void RopeInteraction()
     {
         // Einziehen
-        if (_joyManager.CheckButton(JoystickButton.BUMPER_L, Input.GetButton) && Rope.RopeLength > Rope.MinRopeLength)
+        if (_joyManager.CheckButton(JoystickButton.BUMPER_L, Input.GetButton))
         {
-            Rope.UpdateWinch(Rope.RopeLength - Rope.WinchSpeed * Time.deltaTime);
+            Rope.UpdateWinch(Rope.RopeLength - Rope.WinchSpeed * Time.deltaTime, tower.position, _radius, PlayerNumber);
         }
         // Seil lassen;
-        if (_joyManager.CheckButton(JoystickButton.BUMPER_L, Input.GetButton) && Rope.RopeLength < Rope.MaxRopeLength)
+        if (_joyManager.CheckButton(JoystickButton.BUMPER_R, Input.GetButton))
         {
-            Rope.UpdateWinch(Rope.RopeLength + Rope.WinchSpeed * Time.deltaTime);
+            Rope.UpdateWinch(Rope.RopeLength + Rope.WinchSpeed * Time.deltaTime, tower.position, _radius, PlayerNumber);
         }
     }
 
@@ -90,13 +90,14 @@ public class PlayerControlls : MonoBehaviour
     {
         var h = _joyManager.GetAxis(JoystickAxis.HORIZONTAL);
 
+        Vector3 oldPosition = transform.position;
         transform.RotateAround(tower.position, Vector3.up, h * Speed * Time.deltaTime);
 
-        var desiredPos = (transform.position - tower.position).normalized * _radius + tower.position;
+        //var desiredPos = (transform.position - tower.position).normalized * _radius + tower.position;
 
-        if (Rope.CheckNewPosition(desiredPos, PlayerNumber))
+        if (!Rope.CheckNewPosition(transform.position, PlayerNumber))
         {
-            transform.position = Vector3.MoveTowards(transform.position, desiredPos, Time.deltaTime * Speed);
+            transform.position = oldPosition;
         }
 
         // Coorect Look Dir
@@ -113,20 +114,6 @@ public class PlayerControlls : MonoBehaviour
         {
             transform.position = towerCenter + (transform.position - towerCenter).normalized * _radius;
         }
-
-        //var tmpTimer = _timer - _joyManager.GetAxis(JoystickAxis.HORIZONTAL) * Time.deltaTime * Speed;
-        //var angle = tmpTimer;
-        //var newPos = new Vector3((_centre.x + Mathf.Sin(angle) * _radius), transform.position.y, ((_centre.y + Mathf.Cos(angle) * _radius)));
-        ////if (Rope.CheckNewPosition(newPos, transform))
-        ////{
-        //_timer = tmpTimer;
-        //transform.position = newPos;
-
-        //if (InCameraFocus)
-        //{
-        //    cam.transform.LookAt(new Vector3(tower.position.x, transform.position.y, tower.position.z));
-        //    cam.transform.position = new Vector3((_camCentre.x + Mathf.Sin(angle) * (_radius + CameraOffset)), transform.position.y, ((_camCentre.y + Mathf.Cos(angle) * (_radius + CameraOffset))));
-        //}
     }
 
     private void CheckPosition()
