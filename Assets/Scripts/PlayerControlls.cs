@@ -71,15 +71,24 @@ public class PlayerControlls : MonoBehaviour
         currentSpeed = Mathf.SmoothDamp(currentSpeed, WalkSpeed, ref speedSmothvelocity, GetModifiedSmoothTime(SPEED_SMOTH_TIME));
         MovementManger.NextPosition(transform, h, currentSpeed, TowerObject, Tower.CharacterLayer, ref lookDir);
 
-        if (!Rope.CheckNewPosition(transform.position, PlayerNumber))
-        {
-            transform.position = oldPosition;
-            transform.rotation = oldRotation;
-        }
-
         velocityY -= Gravity * Time.fixedDeltaTime;
 
         characterController.Move(new Vector3(0, velocityY, 0) * Time.fixedDeltaTime);
+
+        if (!Rope.CheckNewPosition(transform.position, PlayerNumber))
+        {
+            if (velocityY <= 0)
+            {
+                transform.position = new Vector3(oldPosition.x, transform.position.y, oldPosition.z);
+            }
+            else
+            {
+                transform.position = oldPosition;
+                velocityY = 0;
+            }
+
+            transform.rotation = oldRotation;
+        }
 
         if (characterController.isGrounded)
         {
