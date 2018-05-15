@@ -13,19 +13,12 @@ public class PlayerControlls : MonoBehaviour
 
     public float Speed;
 
-    private float RotateSpeed = 1f;
     public float CharacterOffset = 5f;
     public float CameraOffset = 10;
     public byte PlayerNumber;
 
     public RopeController Rope;
 
-    public float StartAngle = 5;
-
-    private Vector2 _centre;
-    private Vector2 _camCentre;
-    private float _angle;
-    private float _timer;
     private float _radius;
 
     public float JumpForce;
@@ -34,7 +27,7 @@ public class PlayerControlls : MonoBehaviour
 
     public bool InCameraFocus;
 
-    public float LookDir = 45f;
+    private float lookDir = 0;
 
     private bool isGrounded;
     private Rigidbody rb;
@@ -42,29 +35,14 @@ public class PlayerControlls : MonoBehaviour
 
     private void Start()
     {
-        _radius = tower.localScale.x / 2 + CharacterOffset;
+        _radius = tower.localScale.x / 2;
 
-        var x = _radius * Mathf.Sin(StartAngle);
-        var z = _radius * Mathf.Cos(StartAngle);
-
-        transform.position = new Vector3(x, transform.position.y, z);
-
-        if (InCameraFocus)
-        {
-            x = (_radius + CameraOffset) * Mathf.Sin(StartAngle);
-            z = (_radius + CameraOffset) * Mathf.Cos(StartAngle);
-
-            cam.transform.position = new Vector3(x, transform.position.y, z);
-            _camCentre = new Vector2(transform.position.x, transform.position.z);
-        }
-
-        _centre = new Vector2(transform.position.x, transform.position.z);
         rb = GetComponent<Rigidbody>();
         _joyManager = new JoystickManager(PlayerNumber);
     }
 
     // Update is called once per frame
-    private void Update()
+    private void FixedUpdate()
     {
         RopeInteraction();
         Movement();
@@ -88,12 +66,12 @@ public class PlayerControlls : MonoBehaviour
 
     private void Movement()
     {
-        var h = _joyManager.GetAxis(JoystickAxis.HORIZONTAL);
+        var h = -_joyManager.GetAxis(JoystickAxis.HORIZONTAL);
+        var towerCenter = new Vector3(tower.position.x, transform.position.y, tower.position.z);
+        var playerRadius = _radius + CharacterOffset;
 
         Vector3 oldPosition = transform.position;
         transform.RotateAround(tower.position, Vector3.up, h * Speed * Time.deltaTime);
-
-        //var desiredPos = (transform.position - tower.position).normalized * _radius + tower.position;
 
         if (!Rope.CheckNewPosition(transform.position, PlayerNumber))
         {
@@ -101,18 +79,29 @@ public class PlayerControlls : MonoBehaviour
         }
 
         // Coorect Look Dir
-        var lookDir = (h > 0) ? 0 : 180;
-        Vector3 tangentVector = Quaternion.Euler(0, lookDir, 0) * (transform.position - new Vector3(tower.position.x, transform.position.y, tower.position.z));
+        if (h != 0)
+            lookDir = (h > 0) ? 0 : 180;
+
+        Vector3 tangentVector = Quaternion.Euler(0, lookDir, 0) * (transform.position - towerCenter);
         transform.rotation = Quaternion.LookRotation(tangentVector);
 
         // Check if inside Radius
-        var towerCenter = new Vector3(tower.position.x, transform.position.y, tower.position.z);
+
         var distanceSqr = (transform.position - towerCenter).sqrMagnitude;
         float radiusSqr = _radius * _radius;
 
         if (distanceSqr != radiusSqr)
         {
-            transform.position = towerCenter + (transform.position - towerCenter).normalized * _radius;
+            transform.position = towerCenter + (transform.position - towerCenter).normalized * playerRadius;
+        }
+
+        // Fix Cam
+        if (InCameraFocus)
+        {
+            var ropePosition = Rope.GetComponent<LineRenderer>().bounds.center;
+
+            cam.transform.position = towerCenter + (ropePosition - towerCenter).normalized * (playerRadius + CameraOffset);
+            cam.transform.LookAt(ropePosition);
         }
     }
 
