@@ -13,8 +13,6 @@ public class PlayerControlls : MonoBehaviour
 
     public float Speed;
 
-    public float CharacterOffset = 5f;
-    public float CameraOffset = 10;
     public byte PlayerNumber;
 
     public RopeController Rope;
@@ -64,12 +62,12 @@ public class PlayerControlls : MonoBehaviour
     {
         var h = -_joyManager.GetAxis(JoystickAxis.HORIZONTAL);
         var towerCenter = new Vector3(tower.transform.position.x, transform.position.y, tower.transform.position.z);
-        var playerRadius = tower.Radius + CharacterOffset;
+        var playerRadius = tower.Radius + Tower.CharacterLayer;
 
         Vector3 oldPosition = transform.position;
         Quaternion oldRotation = transform.rotation;
 
-        MovementManger.NextPosition(transform, h, Speed, tower, CharacterOffset, ref lookDir);
+        MovementManger.NextPosition(transform, h, Speed, tower, Tower.CharacterLayer, ref lookDir);
 
         if (!Rope.CheckNewPosition(transform.position, PlayerNumber))
         {
@@ -82,7 +80,7 @@ public class PlayerControlls : MonoBehaviour
         {
             var ropePosition = Rope.GetComponent<LineRenderer>().bounds.center;
 
-            cam.transform.position = towerCenter + (ropePosition - towerCenter).normalized * (playerRadius + CameraOffset);
+            cam.transform.position = towerCenter + (ropePosition - towerCenter).normalized * (playerRadius + Tower.CameraLayer);
             cam.transform.LookAt(ropePosition);
         }
     }

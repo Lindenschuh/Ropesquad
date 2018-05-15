@@ -4,10 +4,10 @@ using UnityEngine;
 
 public static class MovementManger
 {
-    public static void NextPosition(Transform target, float hInput, float speed, Tower center, float characterOffset, ref float lookDir)
+    public static void NextPosition(Transform target, float hInput, float speed, Tower center, float movementlayer, ref float lookDir)
     {
         var towerCenter = new Vector3(center.transform.position.x, target.position.y, center.transform.position.z);
-        var playerRadius = center.Radius + characterOffset;
+        var playerRadius = center.Radius + movementlayer;
 
         target.RotateAround(center.transform.position, Vector3.up, hInput * speed * Time.fixedDeltaTime);
 
