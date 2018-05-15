@@ -42,7 +42,7 @@ public class PlayerControlls : MonoBehaviour
     }
 
     // Update is called once per frame
-    private void Update()
+    private void FixedUpdate()
     {
         Movement();
         Jumping();
@@ -55,12 +55,12 @@ public class PlayerControlls : MonoBehaviour
         // Einziehen
         if (_joyManager.CheckButton(JoystickButton.BUMPER_L, Input.GetButton) && Rope.RopeLength > Rope.MinRopeLength)
         {
-            Rope.UpdateWinch(Rope.RopeLength - Rope.WinchSpeed * Time.deltaTime);
+            Rope.UpdateWinch(Rope.RopeLength - Rope.WinchSpeed * Time.fixedDeltaTime);
         }
         // Seil lassen;
         if (_joyManager.CheckButton(JoystickButton.BUMPER_L, Input.GetButton) && Rope.RopeLength < Rope.MaxRopeLength)
         {
-            Rope.UpdateWinch(Rope.RopeLength + Rope.WinchSpeed * Time.deltaTime);
+            Rope.UpdateWinch(Rope.RopeLength + Rope.WinchSpeed * Time.fixedDeltaTime);
         }
     }
 
@@ -70,13 +70,13 @@ public class PlayerControlls : MonoBehaviour
         var towerCenter = new Vector3(tower.position.x, transform.position.y, tower.position.z);
         var playerRadius = _radius + CharacterOffset;
 
-        transform.RotateAround(tower.position, Vector3.up, h * Speed * Time.deltaTime);
+        transform.RotateAround(tower.position, Vector3.up, h * Speed * Time.fixedDeltaTime);
 
         var desiredPos = (transform.position - tower.position).normalized * playerRadius + tower.position;
 
         if (Rope.CheckNewPosition(desiredPos, PlayerNumber))
         {
-            transform.position = Vector3.MoveTowards(transform.position, desiredPos, Time.deltaTime * Speed);
+            transform.position = Vector3.MoveTowards(transform.position, desiredPos, Time.fixedDeltaTime * Speed);
         }
 
         // Coorect Look Dir
@@ -99,8 +99,10 @@ public class PlayerControlls : MonoBehaviour
         // Fix Cam
         if (InCameraFocus)
         {
-            cam.transform.position = towerCenter + (transform.position - towerCenter).normalized * (playerRadius + CameraOffset);
-            cam.transform.LookAt(transform);
+            var ropePosition = Rope.GetComponent<LineRenderer>().bounds.center;
+
+            cam.transform.position = towerCenter + (ropePosition - towerCenter).normalized * (playerRadius + CameraOffset);
+            cam.transform.LookAt(ropePosition);
         }
     }
 
