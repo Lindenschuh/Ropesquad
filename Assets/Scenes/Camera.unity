@@ -224,7 +224,7 @@ MeshRenderer:
   m_ReflectionProbeUsage: 1
   m_RenderingLayerMask: 4294967295
   m_Materials:
-  - {fileID: 2100000, guid: 4803d23c7c942534086771ee3ed6c985, type: 2}
+  - {fileID: 2100000, guid: d62d8d97916564a45813807611725471, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -327,6 +327,9 @@ MonoBehaviour:
   tower: {fileID: 396631931}
   CharacterOffset: 5
   CameraOffset: 10
+  JumpForce: 0
+  FallMutiplier: 2.5
+  LowJumpMultiplier: 2
 --- !u!136 &701888862
 CapsuleCollider:
   m_ObjectHideFlags: 0
@@ -538,7 +541,7 @@ MeshRenderer:
   m_ReflectionProbeUsage: 1
   m_RenderingLayerMask: 4294967295
   m_Materials:
-  - {fileID: 2100000, guid: 4803d23c7c942534086771ee3ed6c985, type: 2}
+  - {fileID: 2100000, guid: 0092d7f9b6eb97f4682e81645f0c7b45, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
