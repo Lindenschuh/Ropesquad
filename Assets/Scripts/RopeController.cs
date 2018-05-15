@@ -78,7 +78,7 @@ public class RopeController : MonoBehaviour
             else
             {
                 var ropeDelta = oldRopeLentgh - RopeLength;
-                ConnectionOne.position = ConnectionOne.position - (ConnectionOne.position - ConnectionTwo.position).normalized * ropeDelta;
+                ConnectionTwo.position = ConnectionTwo.position - (ConnectionTwo.position - ConnectionOne.position).normalized * ropeDelta;
             }
         }
 

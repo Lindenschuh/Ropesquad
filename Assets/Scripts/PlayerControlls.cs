@@ -9,7 +9,7 @@ public class PlayerControlls : MonoBehaviour
     // Use this for initialization
     public Camera cam;
 
-    public Transform tower;
+    public Tower tower;
 
     public float Speed;
 
@@ -18,8 +18,6 @@ public class PlayerControlls : MonoBehaviour
     public byte PlayerNumber;
 
     public RopeController Rope;
-
-    private float _radius;
 
     public float JumpForce;
     public float FallMutiplier = 2.5f;
@@ -35,8 +33,6 @@ public class PlayerControlls : MonoBehaviour
 
     private void Start()
     {
-        _radius = tower.localScale.x / 2;
-
         rb = GetComponent<Rigidbody>();
         _joyManager = new JoystickManager(PlayerNumber);
     }
@@ -55,44 +51,30 @@ public class PlayerControlls : MonoBehaviour
         // Einziehen
         if (_joyManager.CheckButton(JoystickButton.BUMPER_L, Input.GetButton))
         {
-            Rope.UpdateWinch(Rope.RopeLength - Rope.WinchSpeed * Time.fixedDeltaTime, tower.position, _radius, PlayerNumber);
+            Rope.UpdateWinch(Rope.RopeLength - Rope.WinchSpeed * Time.fixedDeltaTime, tower.transform.position, tower.Radius, PlayerNumber);
         }
         // Seil lassen;
         if (_joyManager.CheckButton(JoystickButton.BUMPER_R, Input.GetButton))
         {
-            Rope.UpdateWinch(Rope.RopeLength + Rope.WinchSpeed * Time.fixedDeltaTime, tower.position, _radius, PlayerNumber);
+            Rope.UpdateWinch(Rope.RopeLength + Rope.WinchSpeed * Time.fixedDeltaTime, tower.transform.position, tower.Radius, PlayerNumber);
         }
     }
 
     private void Movement()
     {
         var h = -_joyManager.GetAxis(JoystickAxis.HORIZONTAL);
-        var towerCenter = new Vector3(tower.position.x, transform.position.y, tower.position.z);
-        var playerRadius = _radius + CharacterOffset;
+        var towerCenter = new Vector3(tower.transform.position.x, transform.position.y, tower.transform.position.z);
+        var playerRadius = tower.Radius + CharacterOffset;
 
         Vector3 oldPosition = transform.position;
-        transform.RotateAround(tower.position, Vector3.up, h * Speed * Time.fixedDeltaTime);
+        Quaternion oldRotation = transform.rotation;
+
+        MovementManger.NextPosition(transform, h, Speed, tower, CharacterOffset, ref lookDir);
 
         if (!Rope.CheckNewPosition(transform.position, PlayerNumber))
         {
             transform.position = oldPosition;
-        }
-
-        // Coorect Look Dir
-        if (h != 0)
-            lookDir = (h > 0) ? 0 : 180;
-
-        Vector3 tangentVector = Quaternion.Euler(0, lookDir, 0) * (transform.position - towerCenter);
-        transform.rotation = Quaternion.LookRotation(tangentVector);
-
-        // Check if inside Radius
-
-        var distanceSqr = (transform.position - towerCenter).sqrMagnitude;
-        float radiusSqr = _radius * _radius;
-
-        if (distanceSqr != radiusSqr)
-        {
-            transform.position = towerCenter + (transform.position - towerCenter).normalized * playerRadius;
+            transform.rotation = oldRotation;
         }
 
         // Fix Cam
