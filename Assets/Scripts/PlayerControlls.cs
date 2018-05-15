@@ -4,34 +4,38 @@ using UnityEngine;
 using Joysticks;
 using System;
 
+[RequireComponent(typeof(CharacterController))]
 public class PlayerControlls : MonoBehaviour
 {
+    private static float SPEED_SMOTH_TIME = .1f;
+
     // Use this for initialization
-    public Camera cam;
+    public Tower TowerObject;
 
-    public Tower tower;
-
-    public float Speed;
-
+    public float CharacterOffset = 5f;
+    public float CameraOffset = 10;
     public byte PlayerNumber;
 
     public RopeController Rope;
 
-    public float JumpForce;
-    public float FallMutiplier = 2.5f;
-    public float LowJumpMultiplier = 2f;
+    public float WalkSpeed = 2;
+    public float Gravity = 12;
+    public float JumpHeight = 1;
 
-    public bool InCameraFocus;
+    [Range(0, 1)]
+    public float AirControlPercentage;
 
     private float lookDir = 0;
-
-    private bool isGrounded;
-    private Rigidbody rb;
+    private float velocityY;
+    private float currentSpeed;
     private JoystickManager _joyManager;
+    private CharacterController characterController;
+
+    private float speedSmothvelocity;
 
     private void Start()
     {
-        rb = GetComponent<Rigidbody>();
+        characterController = GetComponent<CharacterController>();
         _joyManager = new JoystickManager(PlayerNumber);
     }
 
@@ -41,7 +45,6 @@ public class PlayerControlls : MonoBehaviour
         RopeInteraction();
         Movement();
         Jumping();
-        CheckPosition();
     }
 
     private void RopeInteraction()
@@ -49,25 +52,24 @@ public class PlayerControlls : MonoBehaviour
         // Einziehen
         if (_joyManager.CheckButton(JoystickButton.BUMPER_L, Input.GetButton))
         {
-            Rope.UpdateWinch(Rope.RopeLength - Rope.WinchSpeed * Time.fixedDeltaTime, tower.transform.position, tower.Radius, PlayerNumber);
+            Rope.UpdateWinch(Rope.RopeLength - Rope.WinchSpeed * Time.fixedDeltaTime, TowerObject.transform.position, TowerObject.Radius, PlayerNumber);
         }
         // Seil lassen;
         if (_joyManager.CheckButton(JoystickButton.BUMPER_R, Input.GetButton))
         {
-            Rope.UpdateWinch(Rope.RopeLength + Rope.WinchSpeed * Time.fixedDeltaTime, tower.transform.position, tower.Radius, PlayerNumber);
+            Rope.UpdateWinch(Rope.RopeLength + Rope.WinchSpeed * Time.fixedDeltaTime, TowerObject.transform.position, TowerObject.Radius, PlayerNumber);
         }
     }
 
     private void Movement()
     {
         var h = -_joyManager.GetAxis(JoystickAxis.HORIZONTAL);
-        var towerCenter = new Vector3(tower.transform.position.x, transform.position.y, tower.transform.position.z);
-        var playerRadius = tower.Radius + Tower.CharacterLayer;
 
         Vector3 oldPosition = transform.position;
         Quaternion oldRotation = transform.rotation;
 
-        MovementManger.NextPosition(transform, h, Speed, tower, Tower.CharacterLayer, ref lookDir);
+        currentSpeed = Mathf.SmoothDamp(currentSpeed, WalkSpeed, ref speedSmothvelocity, GetModifiedSmoothTime(SPEED_SMOTH_TIME));
+        MovementManger.NextPosition(transform, h, currentSpeed, TowerObject, Tower.CharacterLayer, ref lookDir);
 
         if (!Rope.CheckNewPosition(transform.position, PlayerNumber))
         {
@@ -75,44 +77,33 @@ public class PlayerControlls : MonoBehaviour
             transform.rotation = oldRotation;
         }
 
-        // Fix Cam
-        if (InCameraFocus)
+        velocityY -= Gravity * Time.fixedDeltaTime;
+
+        characterController.Move(new Vector3(0, velocityY, 0) * Time.fixedDeltaTime);
+
+        if (characterController.isGrounded)
         {
-            var ropePosition = Rope.GetComponent<LineRenderer>().bounds.center;
-
-            cam.transform.position = towerCenter + (ropePosition - towerCenter).normalized * (playerRadius + Tower.CameraLayer);
-            cam.transform.LookAt(ropePosition);
+            velocityY = 0;
         }
-    }
-
-    private void CheckPosition()
-    {
     }
 
     private void Jumping()
     {
-        if (_joyManager.CheckButton(JoystickButton.A, Input.GetButtonDown) && isGrounded)
+        if (_joyManager.CheckButton(JoystickButton.A, Input.GetButtonDown) && characterController.isGrounded)
         {
-            rb.velocity += Vector3.up * JumpForce;
-        }
-
-        if (rb.velocity.y < 0)
-        {
-            rb.velocity += Vector3.up * Physics.gravity.y * (FallMutiplier - 1) * Time.fixedDeltaTime;
-        }
-        else if (rb.velocity.y > 0 && !_joyManager.CheckButton(JoystickButton.A, Input.GetButton))
-        {
-            rb.velocity += Vector3.up * Physics.gravity.y * (LowJumpMultiplier - 1) * Time.fixedDeltaTime;
+            float jumpVelocity = Mathf.Sqrt(2 * Gravity * JumpHeight);
+            velocityY = jumpVelocity;
         }
     }
 
-    private void OnTriggerEnter(Collider other)
+    private float GetModifiedSmoothTime(float smoothTime)
     {
-        isGrounded = true;
-    }
+        if (characterController.isGrounded)
+            return smoothTime;
 
-    private void OnTriggerExit(Collider other)
-    {
-        isGrounded = false;
+        if (AirControlPercentage == 0)
+            return float.MaxValue;
+
+        return smoothTime / AirControlPercentage;
     }
 }
