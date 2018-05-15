@@ -1,6 +1,5 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
+using Joysticks;
 
 [RequireComponent(typeof(Rigidbody))]
 public class PlayerControlls : MonoBehaviour
@@ -9,22 +8,25 @@ public class PlayerControlls : MonoBehaviour
     public float JumpForce;
     public float FallMutiplier = 2.5f;
     public float LowJumpMultiplier = 2f;
+    public byte PlayerNumber;
 
     private bool isGrounded;
     private Rigidbody rb;
+    private JoystickManager joyManager;
 
     private void Start()
     {
         rb = GetComponent<Rigidbody>();
+        joyManager = new JoystickManager(PlayerNumber);
     }
 
     private void FixedUpdate()
     {
-        var h = Input.GetAxis("Horizontal");
+        var h = joyManager.GetAxis(JoystickAxis.HORIZONTAL);
 
         transform.position += new Vector3(h * Speed, 0, 0) * Time.deltaTime;
 
-        if (Input.GetButtonDown("Fire1") && isGrounded)
+        if (joyManager.CheckButton(JoystickButton.A, Input.GetButtonDown) && isGrounded)
         {
             rb.velocity += Vector3.up * JumpForce;
         }
@@ -33,7 +35,7 @@ public class PlayerControlls : MonoBehaviour
         {
             rb.velocity += Vector3.up * Physics.gravity.y * (FallMutiplier - 1) * Time.fixedDeltaTime;
         }
-        else if (rb.velocity.y > 0 && !Input.GetButton("Fire1"))
+        else if (rb.velocity.y > 0 && !joyManager.CheckButton(JoystickButton.A, Input.GetButton))
         {
             rb.velocity += Vector3.up * Physics.gravity.y * (LowJumpMultiplier - 1) * Time.fixedDeltaTime;
         }
