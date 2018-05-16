@@ -22,7 +22,8 @@ GameObject:
   - component: {fileID: 33230393217202966}
   - component: {fileID: 23994853089908446}
   - component: {fileID: 65814903276027348}
-  - component: {fileID: 65701956557252166}
+  - component: {fileID: 114402399629947990}
+  - component: {fileID: 65393429849719768}
   m_Layer: 0
   m_Name: BuildingBlock
   m_TagString: Untagged
@@ -36,13 +37,13 @@ Transform:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1244446916036148}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 5.15, z: -1}
-  m_LocalScale: {x: 2, y: 0.5, z: 2}
+  m_LocalRotation: {x: -0, y: 0.08419464, z: -0, w: 0.99644935}
+  m_LocalPosition: {x: 8.38, y: 4.01, z: 152.36}
+  m_LocalScale: {x: 10, y: 0.5, z: 14}
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 0
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 10, z: 0}
 --- !u!23 &23994853089908446
 MeshRenderer:
   m_ObjectHideFlags: 1
@@ -58,7 +59,7 @@ MeshRenderer:
   m_ReflectionProbeUsage: 1
   m_RenderingLayerMask: 4294967295
   m_Materials:
-  - {fileID: 10303, guid: 0000000000000000f000000000000000, type: 0}
+  - {fileID: 2100000, guid: 754afa7ac8249e149a5a6f541efeb549, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -85,7 +86,7 @@ MeshFilter:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1244446916036148}
   m_Mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
---- !u!65 &65701956557252166
+--- !u!65 &65393429849719768
 BoxCollider:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
@@ -95,7 +96,7 @@ BoxCollider:
   m_IsTrigger: 1
   m_Enabled: 1
   serializedVersion: 2
-  m_Size: {x: 1, y: 0.01, z: 1}
+  m_Size: {x: 1, y: 0.1, z: 0.99999994}
   m_Center: {x: 0, y: 0.505, z: 0}
 --- !u!65 &65814903276027348
 BoxCollider:
@@ -109,3 +110,18 @@ BoxCollider:
   serializedVersion: 2
   m_Size: {x: 1, y: 1, z: 1}
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &114402399629947990
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1244446916036148}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2eea702abd118bc4c82c5d02dbb1d927, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  MoveDistance: 1
+  Tower: {fileID: 0}
+  MovementSpeed: 0
+  Direction: 2
