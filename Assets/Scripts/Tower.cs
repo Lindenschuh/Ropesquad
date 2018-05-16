@@ -9,7 +9,7 @@ public class Tower : MonoBehaviour
     public const float CharacterLayer = 5f;
     public const float CameraLayer = 10f;
 
-    private void Start()
+    private void Awake()
     {
         Radius = transform.localScale.x / 2;
     }
