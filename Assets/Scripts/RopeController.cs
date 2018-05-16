@@ -13,6 +13,8 @@ public class RopeController : MonoBehaviour
 
     public float RopeLength = 1f;
 
+    public float CharacterCenterOffset = 2;
+
     public float MinRopeLength = 1f;
     public float MaxRopeLength = 20f;
 
@@ -66,19 +68,22 @@ public class RopeController : MonoBehaviour
     public void UpdateWinch(float newLength, Vector3 center, float radius, byte playerNumber)
     {
         var oldRopeLentgh = RopeLength;
+
+        var conOnePos = ConnectionOne.position + Vector3.up * CharacterCenterOffset;
+        var conTwoPos = ConnectionOne.position + Vector3.up * CharacterCenterOffset;
         RopeLength = Mathf.Clamp(newLength, MinRopeLength, MaxRopeLength);
 
-        if ((ConnectionOne.position - ConnectionTwo.position).magnitude > RopeLength)
+        if ((conOnePos - conTwoPos).magnitude > RopeLength)
         {
             if (playerNumber == 1)
             {
                 var ropeDelta = oldRopeLentgh - RopeLength;
-                ConnectionOne.position = ConnectionOne.position - (ConnectionOne.position - ConnectionTwo.position).normalized * ropeDelta;
+                conOnePos = conOnePos - (conOnePos - conTwoPos).normalized * ropeDelta;
             }
             else
             {
                 var ropeDelta = oldRopeLentgh - RopeLength;
-                ConnectionTwo.position = ConnectionTwo.position - (ConnectionTwo.position - ConnectionOne.position).normalized * ropeDelta;
+                conTwoPos = conTwoPos - (conTwoPos - conOnePos).normalized * ropeDelta;
             }
         }
 
@@ -89,11 +94,11 @@ public class RopeController : MonoBehaviour
     {
         if (player == 1)
         {
-            return (newPos - ConnectionTwo.position).magnitude < RopeLength;
+            return (newPos - (ConnectionTwo.position + Vector3.up * CharacterCenterOffset)).magnitude < RopeLength;
         }
         else
         {
-            return (newPos - ConnectionOne.position).magnitude < RopeLength;
+            return (newPos - (ConnectionOne.position + Vector3.up * CharacterCenterOffset)).magnitude < RopeLength;
         }
     }
 
@@ -102,8 +107,8 @@ public class RopeController : MonoBehaviour
         lineRenderer.startWidth = RopeWidth;
         lineRenderer.endWidth = RopeWidth;
 
-        Vector3 A = ConnectionOne.position;
-        Vector3 D = ConnectionTwo.position;
+        Vector3 A = ConnectionOne.position + Vector3.up * CharacterCenterOffset;
+        Vector3 D = ConnectionTwo.position + Vector3.up * CharacterCenterOffset;
 
         Vector3 B = A + Vector3.zero * .5f * (-(A - D).magnitude * 0.1f);
 

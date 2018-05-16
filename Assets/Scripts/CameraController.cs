@@ -14,7 +14,7 @@ public class CameraController : MonoBehaviour
     {
         var ropePosition = Rope.GetComponent<LineRenderer>().bounds.center;
 
-        var towerCenter = new Vector3(Tower.position.x, ropePosition.y, Tower.position.z);
+        var towerCenter = new Vector3(Tower.position.x, ropePosition.y * 2, Tower.position.z);
 
         transform.position = towerCenter + (ropePosition - towerCenter).normalized * ((ropePosition - towerCenter).magnitude + CameraOffset);
         transform.LookAt(ropePosition);

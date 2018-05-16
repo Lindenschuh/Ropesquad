@@ -4,7 +4,7 @@ using UnityEngine;
 
 public static class MovementManger
 {
-    public static void NextPosition(Transform target, float hInput, float speed, Tower center, float movementlayer, ref float lookDir)
+    public static void NextPosition(Transform target, float hInput, float speed, Tower center, float movementlayer, ref float lookDir, float playerLookOffset)
     {
         var towerCenter = new Vector3(center.transform.position.x, target.position.y, center.transform.position.z);
         var playerRadius = center.Radius + movementlayer;
@@ -14,7 +14,7 @@ public static class MovementManger
         if (hInput != 0)
             lookDir = (hInput > 0) ? 0 : 180;
 
-        Vector3 tangentVector = Quaternion.Euler(0, lookDir, 0) * (target.position - towerCenter);
+        Vector3 tangentVector = Quaternion.Euler(0, lookDir + playerLookOffset, 0) * (target.position - towerCenter);
         target.rotation = Quaternion.LookRotation(tangentVector);
 
         // Check if inside Radius

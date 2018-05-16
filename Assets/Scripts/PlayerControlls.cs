@@ -5,6 +5,7 @@ using Joysticks;
 using System;
 
 [RequireComponent(typeof(CharacterController))]
+[RequireComponent(typeof(Animator))]
 public class PlayerControlls : MonoBehaviour
 {
     private static float SPEED_SMOTH_TIME = .1f;
@@ -22,6 +23,8 @@ public class PlayerControlls : MonoBehaviour
     public float Gravity = 12;
     public float JumpHeight = 1;
 
+    public float PlayerLookOffset = 0;
+
     [Range(0, 1)]
     public float AirControlPercentage;
 
@@ -30,6 +33,7 @@ public class PlayerControlls : MonoBehaviour
     private float currentSpeed;
     private JoystickManager _joyManager;
     private CharacterController characterController;
+    private Animator animator;
 
     private float speedSmothvelocity;
 
@@ -37,6 +41,7 @@ public class PlayerControlls : MonoBehaviour
     {
         characterController = GetComponent<CharacterController>();
         _joyManager = new JoystickManager(PlayerNumber);
+        animator = GetComponent<Animator>();
     }
 
     // Update is called once per frame
@@ -69,7 +74,7 @@ public class PlayerControlls : MonoBehaviour
         Quaternion oldRotation = transform.rotation;
 
         currentSpeed = Mathf.SmoothDamp(currentSpeed, WalkSpeed, ref speedSmothvelocity, GetModifiedSmoothTime(SPEED_SMOTH_TIME));
-        MovementManger.NextPosition(transform, h, currentSpeed, TowerObject, Tower.CharacterLayer, ref lookDir);
+        MovementManger.NextPosition(transform, h, currentSpeed, TowerObject, Tower.CharacterLayer, ref lookDir, PlayerLookOffset);
 
         velocityY -= Gravity * Time.fixedDeltaTime;
 
@@ -93,7 +98,11 @@ public class PlayerControlls : MonoBehaviour
         if (characterController.isGrounded)
         {
             velocityY = 0;
+            animator.SetBool("jumping", false);
         }
+
+        animator.SetFloat("walkSpeed", Mathf.Abs(h));
+        animator.SetFloat("jumpValue", velocityY / JumpHeight);
     }
 
     private void Jumping()
@@ -102,6 +111,7 @@ public class PlayerControlls : MonoBehaviour
         {
             float jumpVelocity = Mathf.Sqrt(2 * Gravity * JumpHeight);
             velocityY = jumpVelocity;
+            animator.SetBool("jumping", true);
         }
     }
 
