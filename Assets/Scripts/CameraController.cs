@@ -10,7 +10,7 @@ public class CameraController : MonoBehaviour
 
     public float CameraOffset;
 
-    private void FixedUpdate()
+    private void LateUpdate()
     {
         var ropePosition = Rope.GetComponent<LineRenderer>().bounds.center;
 

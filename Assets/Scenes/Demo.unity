@@ -382,14 +382,14 @@ Prefab:
       propertyPath: m_RootOrder
       value: 11
       objectReference: {fileID: 0}
-    - target: {fileID: 114402399629947990, guid: d20280c929b2f26498ab205b638f8bc9,
-        type: 2}
-      propertyPath: Tower
-      value: 
-      objectReference: {fileID: 396631932}
     - target: {fileID: 1244446916036148, guid: d20280c929b2f26498ab205b638f8bc9, type: 2}
       propertyPath: m_Name
       value: BuildingBlock (2)
+      objectReference: {fileID: 0}
+    - target: {fileID: 114402399629947990, guid: d20280c929b2f26498ab205b638f8bc9,
+        type: 2}
+      propertyPath: Direction
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 114402399629947990, guid: d20280c929b2f26498ab205b638f8bc9,
         type: 2}
@@ -398,24 +398,9 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 114402399629947990, guid: d20280c929b2f26498ab205b638f8bc9,
         type: 2}
-      propertyPath: Direction
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 65393429849719768, guid: d20280c929b2f26498ab205b638f8bc9,
-        type: 2}
-      propertyPath: m_Size.y
-      value: 0.2
-      objectReference: {fileID: 0}
-    - target: {fileID: 65393429849719768, guid: d20280c929b2f26498ab205b638f8bc9,
-        type: 2}
-      propertyPath: m_Center.y
-      value: 0.55
-      objectReference: {fileID: 0}
-    - target: {fileID: 65393429849719768, guid: d20280c929b2f26498ab205b638f8bc9,
-        type: 2}
-      propertyPath: m_Size.x
-      value: 0.97
-      objectReference: {fileID: 0}
+      propertyPath: Tower
+      value: 
+      objectReference: {fileID: 396631932}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: d20280c929b2f26498ab205b638f8bc9, type: 2}
   m_IsPrefabParent: 0
