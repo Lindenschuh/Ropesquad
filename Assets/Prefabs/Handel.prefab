@@ -22,7 +22,7 @@ GameObject:
   - component: {fileID: 33423988515335702}
   - component: {fileID: 23067121236211698}
   - component: {fileID: 136764851375425916}
-  - component: {fileID: 114976307242266630}
+  - component: {fileID: 114718091539883566}
   m_Layer: 2
   m_Name: Handel
   m_TagString: Untagged
@@ -114,7 +114,7 @@ MeshFilter:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1535535663082940}
   m_Mesh: {fileID: 10206, guid: 0000000000000000e000000000000000, type: 0}
---- !u!114 &114976307242266630
+--- !u!114 &114718091539883566
 MonoBehaviour:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
