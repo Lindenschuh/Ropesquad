@@ -83,6 +83,7 @@ public class PlayerControlls : MonoBehaviour
                 IsAnchord = false;
                 Anchor = null;
             }
+            Rope.SetAnker(PlayerNumber, Anchor);
         }
     }
 
