@@ -756,8 +756,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Tower: {fileID: 396631931}
-  Rope: {fileID: 933287325}
-  CameraOffset: 10
+  Rope: {fileID: 933287321}
+  MinOffset: 12
+  MaxOffset: 15
 --- !u!1 &1240570338
 GameObject:
   m_ObjectHideFlags: 0

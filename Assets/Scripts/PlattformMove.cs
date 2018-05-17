@@ -33,7 +33,7 @@ namespace Movement
 
         private float approcheRadius;
 
-        void Start()
+        private void Start()
         {
             MovementManger.SnapToGrid(transform, GameTower, Tower.CharacterLayer);
 
@@ -41,7 +41,7 @@ namespace Movement
             {
                 if (PointA != null && PointB != null)
                 {
-                    target = (InverseStart) ? PointB : PointB;
+                    target = (InverseStart) ? PointB : PointA;
                     approcheRadius = transform.localScale.x / 2;
 
                     switch (Direction)
