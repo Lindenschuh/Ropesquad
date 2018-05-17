@@ -29,6 +29,8 @@ public class PlayerControlls : MonoBehaviour
     public bool IsAnchord;
     public Transform Anchor { get; private set; }
 
+    public LayerMask Boundaries;
+
     [Range(0, 1)]
     public float AirControlPercentage;
 
@@ -55,40 +57,8 @@ public class PlayerControlls : MonoBehaviour
     private void FixedUpdate()
     {
         RopeInteraction();
-        AnchorCheck();
         Movement();
         Jumping();
-    }
-
-    private void AnchorCheck()
-    {
-        var offsetedPosition = transform.position + Vector3.up * Rope.offsetY;
-        RaycastHit hit;
-        Debug.DrawRay(offsetedPosition, (Rope.transform.position - offsetedPosition).normalized * (Rope.Radius * 2));
-        if (Physics.Raycast(offsetedPosition, (Rope.transform.position - offsetedPosition).normalized, out hit, Rope.Radius * 2))
-        {
-            var hitObj = hit.collider.gameObject;
-            if (hitObj.layer != _playerLayer)
-            {
-                if (!IsAnchord)
-                {
-                    Anchor = new GameObject().transform;
-                    Anchor.position = hit.point;
-                    Anchor.parent = hitObj.transform;
-                }
-                IsAnchord = true;
-            }
-            else
-            {
-                IsAnchord = false;
-                if (Anchor != null)
-                {
-                    DestroyImmediate(Anchor.gameObject);
-                    Anchor = null;
-                }
-            }
-            Rope.SetAnker(PlayerNumber, Anchor);
-        }
     }
 
     private void RopeInteraction()
@@ -96,12 +66,12 @@ public class PlayerControlls : MonoBehaviour
         // Einziehen
         if (_joyManager.CheckButton(JoystickButton.BUMPER_L, Input.GetButton))
         {
-            Rope.changeRopeLength(-1f * Time.fixedDeltaTime);
+            Rope.ChangeRopeLength(-1f * Time.fixedDeltaTime);
         }
         // Seil lassen;
         if (_joyManager.CheckButton(JoystickButton.BUMPER_R, Input.GetButton))
         {
-            Rope.changeRopeLength(1f * Time.fixedDeltaTime);
+            Rope.ChangeRopeLength(1f * Time.fixedDeltaTime);
         }
     }
 
@@ -160,5 +130,53 @@ public class PlayerControlls : MonoBehaviour
             return float.MaxValue;
 
         return smoothTime / AirControlPercentage;
+    }
+
+    public void LookAtPoints(PlayerControlls otherPlayer, Transform otherAnker, Transform myAnker)
+    {
+        var correctedPosition = transform.position + Vector3.up * Rope.offsetY;
+        var correctedOtherPosition = otherPlayer.transform.position + Vector3.up * Rope.offsetY;
+
+        RaycastHit otherPlayerHit;
+        Ray otherPlayerRay = new Ray(correctedPosition, (correctedOtherPosition - correctedPosition).normalized);
+        Debug.DrawRay(otherPlayerRay.origin, otherPlayerRay.direction, Color.blue, Rope.Radius);
+        bool otherPlayerHitted = false;
+        if (Physics.Raycast(otherPlayerRay, out otherPlayerHit, Rope.Radius, Boundaries))
+        {
+            otherPlayerHitted = otherPlayerHit.transform.position + Vector3.up * Rope.offsetY == correctedOtherPosition;
+        }
+
+        RaycastHit otherAnkerHit;
+        Ray otherAnkerRay = new Ray(correctedPosition, (otherAnker.position - correctedPosition).normalized);
+        Debug.DrawRay(otherAnkerRay.origin, otherAnkerRay.direction, Color.yellow, Rope.Radius);
+        bool otherAnkerHitted = false;
+        if (Physics.Raycast(otherAnkerRay, out otherAnkerHit, Rope.Radius))
+        {
+            otherAnkerHitted = otherAnkerHit.transform.position == otherAnker.position;
+        }
+
+        RaycastHit myAnkerHit;
+        Ray myAnkerRay = new Ray(correctedPosition, (myAnker.position - correctedPosition).normalized);
+        Debug.DrawRay(myAnkerRay.origin, myAnkerRay.direction, Color.magenta, Rope.Radius);
+        bool myAnkerHitted = false;
+        if (Physics.Raycast(myAnkerRay, out myAnkerHit, Rope.Radius))
+        {
+            myAnkerHitted = myAnkerHit.transform.position == myAnker.position;
+        }
+
+        Debug.Log($"{PlayerNumber}: Other Player: {otherPlayerHitted}, OtherAnker: {otherAnkerHitted}, MyAnker: {myAnkerHitted} ");
+
+        if (otherPlayerHitted && otherAnkerHitted && myAnkerHitted)
+        {
+            myAnker.position = Rope.transform.position;
+        }
+        else if (otherAnkerHitted && myAnkerHitted)
+        {
+            myAnker.position = otherAnker.position;
+        }
+        else if (myAnkerHitted)
+        {
+            myAnker.position = myAnkerHit.point;
+        }
     }
 }

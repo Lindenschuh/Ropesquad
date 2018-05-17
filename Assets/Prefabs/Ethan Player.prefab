@@ -2490,6 +2490,10 @@ MonoBehaviour:
   JumpHeight: 5
   PlayerLookOffset: 90
   IsAnchord: 0
+  IsFlexing: 0
+  Boundaries:
+    serializedVersion: 2
+    m_Bits: 4294966271
   AirControlPercentage: 0
   velocityY: 0
 --- !u!137 &137573457682838378

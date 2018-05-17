@@ -428,6 +428,11 @@ Prefab:
       propertyPath: Direction
       value: 2
       objectReference: {fileID: 0}
+    - target: {fileID: 65481390179994758, guid: b5a7b3e252bcff64e93b841d8a86e6a5,
+        type: 2}
+      propertyPath: m_Size.y
+      value: 2
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: b5a7b3e252bcff64e93b841d8a86e6a5, type: 2}
   m_IsPrefabParent: 0
@@ -468,6 +473,8 @@ MonoBehaviour:
   Player1: {fileID: 994489680}
   Player2: {fileID: 618001992}
   offsetY: 1.7
+  AnkerPrefab: {fileID: 1068629823931468, guid: 96914d266fd0c3a4f916b14138db9785,
+    type: 2}
 --- !u!65 &933287322
 BoxCollider:
   m_ObjectHideFlags: 0
