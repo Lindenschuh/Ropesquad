@@ -8,8 +8,8 @@ Material:
   m_PrefabInternal: {fileID: 0}
   m_Name: Ethan Player One
   m_Shader: {fileID: 45, guid: 0000000000000000f000000000000000, type: 0}
-  m_ShaderKeywords: _EMISSION _LIGHTMAPPING_STATIC_LIGHTMAPS _NORMALMAP _UVPRIM_UV1
-    _UVSEC_UV1
+  m_ShaderKeywords: _EMISSION _GLOSSYREFLECTIONS_OFF _LIGHTMAPPING_STATIC_LIGHTMAPS
+    _NORMALMAP _UVPRIM_UV1 _UVSEC_UV1
   m_LightmapFlags: 0
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
@@ -75,7 +75,7 @@ Material:
     - _EmissionScaleUI: 1
     - _GlossMapScale: 1
     - _Glossiness: 0.4
-    - _GlossyReflections: 1
+    - _GlossyReflections: 0
     - _Lightmapping: 0
     - _Mode: 0
     - _OcclusionStrength: 1

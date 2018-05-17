@@ -16,6 +16,7 @@ public class PlayerControlls : MonoBehaviour
     public float CharacterOffset = 5f;
     public float CameraOffset = 10;
     public byte PlayerNumber;
+    public float UpForce = 1f;
 
     //public RopeController Rope;
     public RadialRope Rope;
@@ -28,12 +29,16 @@ public class PlayerControlls : MonoBehaviour
 
     public bool IsAnchord;
     public Transform Anchor { get; private set; }
+    public bool IsHolding { get; private set; }
+    public bool CanHold;
 
     [Range(0, 1)]
     public float AirControlPercentage;
 
     private float lookDir = 0;
     public float velocityY;
+    public float MinV;
+    public float MaxV;
     private float currentSpeed;
     private JoystickManager _joyManager;
     private CharacterController characterController;
@@ -108,22 +113,31 @@ public class PlayerControlls : MonoBehaviour
     private void Movement()
     {
         var h = -_joyManager.GetAxis(JoystickAxis.HORIZONTAL);
+        var v = -_joyManager.GetAxis(JoystickAxis.VERTICAL);
+        IsHolding = _joyManager.CheckButton(JoystickButton.B, Input.GetButton) && CanHold;
 
-        Vector3 oldPosition = transform.position;
-        Quaternion oldRotation = transform.rotation;
-
-        currentSpeed = Mathf.SmoothDamp(currentSpeed, WalkSpeed, ref speedSmothvelocity, GetModifiedSmoothTime(SPEED_SMOTH_TIME));
-        MovementManger.NextPosition(transform, h, currentSpeed, TowerObject, Tower.CharacterLayer, ref lookDir, PlayerLookOffset);
-
-        velocityY -= Gravity * Time.fixedDeltaTime;
-
-        characterController.Move(new Vector3(0, velocityY, 0) * Time.fixedDeltaTime);
-
-        if (characterController.isGrounded)
+        if (!IsHolding)
         {
-            velocityY = 0;
-        }
+            currentSpeed = Mathf.SmoothDamp(currentSpeed, WalkSpeed, ref speedSmothvelocity, GetModifiedSmoothTime(SPEED_SMOTH_TIME));
+            MovementManger.NextPosition(transform, h, currentSpeed, TowerObject, Tower.CharacterLayer, ref lookDir, PlayerLookOffset);
 
+            if (!characterController.isGrounded && IsAnchord || !characterController.isGrounded && Rope.IsOtherHolding(PlayerNumber))
+            {
+                velocityY = Mathf.Clamp(velocityY - Gravity * Time.fixedDeltaTime, MinV, MaxV);
+                velocityY = Mathf.Clamp(velocityY + v * UpForce * Time.fixedDeltaTime, MinV, MaxV);
+            }
+            else
+            {
+                velocityY -= Gravity * Time.fixedDeltaTime;
+            }
+
+            characterController.Move(new Vector3(0, velocityY, 0) * Time.fixedDeltaTime);
+
+            if (characterController.isGrounded)
+            {
+                velocityY = 0;
+            }
+        }
         UpdateAnimator(Mathf.Abs(h), characterController.isGrounded);
     }
 

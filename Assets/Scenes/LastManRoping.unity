@@ -331,6 +331,26 @@ Prefab:
       propertyPath: Rope
       value: 
       objectReference: {fileID: 933287321}
+    - target: {fileID: 114684545730680636, guid: 7c535846f9c7e0f44b6c1c3f8c97ed7e,
+        type: 2}
+      propertyPath: RotationSpeed
+      value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 114684545730680636, guid: 7c535846f9c7e0f44b6c1c3f8c97ed7e,
+        type: 2}
+      propertyPath: UpForce
+      value: 30
+      objectReference: {fileID: 0}
+    - target: {fileID: 114684545730680636, guid: 7c535846f9c7e0f44b6c1c3f8c97ed7e,
+        type: 2}
+      propertyPath: MinV
+      value: -30
+      objectReference: {fileID: 0}
+    - target: {fileID: 114684545730680636, guid: 7c535846f9c7e0f44b6c1c3f8c97ed7e,
+        type: 2}
+      propertyPath: MaxV
+      value: 15
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 7c535846f9c7e0f44b6c1c3f8c97ed7e, type: 2}
   m_IsPrefabParent: 0
@@ -939,6 +959,21 @@ Prefab:
     - target: {fileID: 1187674244781160, guid: d7d335067bf49a3499656560c31cd9af, type: 2}
       propertyPath: m_Name
       value: Ethan Player One
+      objectReference: {fileID: 0}
+    - target: {fileID: 114156840877732488, guid: d7d335067bf49a3499656560c31cd9af,
+        type: 2}
+      propertyPath: UpForce
+      value: 30
+      objectReference: {fileID: 0}
+    - target: {fileID: 114156840877732488, guid: d7d335067bf49a3499656560c31cd9af,
+        type: 2}
+      propertyPath: MinV
+      value: -30
+      objectReference: {fileID: 0}
+    - target: {fileID: 114156840877732488, guid: d7d335067bf49a3499656560c31cd9af,
+        type: 2}
+      propertyPath: MaxV
+      value: 15
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: d7d335067bf49a3499656560c31cd9af, type: 2}

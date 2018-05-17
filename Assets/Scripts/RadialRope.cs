@@ -30,17 +30,22 @@ public class RadialRope : MonoBehaviour
 
     public void BoundTransform()
     {
-        if (ankerPlayer1 == null)
-            ankerPlayer1 = transform;
-        if (ankerPlayer2 == null)
-            ankerPlayer2 = transform;
-
         Vector3 positionP1 = Player1.transform.position + Vector3.up * offsetY;
         Vector3 positionP2 = Player2.transform.position + Vector3.up * offsetY;
 
-        avdPl1 = (positionP1 - ankerPlayer1.position).magnitude;
+        if (ankerPlayer1 == null)
+        {
+            ankerPlayer1 = transform;
+            avdPl1 = (positionP1 - ankerPlayer1.position).magnitude;
+        }
+
+        if (ankerPlayer2 == null)
+        {
+            ankerPlayer2 = transform;
+            avdPl2 = (positionP2 - ankerPlayer2.position).magnitude;
+        }
+
         subDist = (ankerPlayer1.position - ankerPlayer2.position).magnitude;
-        avdPl2 = (positionP2 - ankerPlayer2.position).magnitude;
 
         float fullDistance = Radius * 2;
         float remainingDistance = fullDistance - subDist;
@@ -52,8 +57,10 @@ public class RadialRope : MonoBehaviour
         Vector3 centerPositionP1 = positionP1 - ((positionP1 - ankerPlayer1.position) / 2);
         Vector3 centerPositionP2 = positionP2 - ((positionP2 - ankerPlayer2.position) / 2);
 
-        ApplyBoundries(Player1.transform, radiusP1, centerPositionP1);
-        ApplyBoundries(Player2.transform, radiusP2, centerPositionP2);
+        if (!Player1.IsHolding)
+            ApplyBoundries(Player1.transform, radiusP1, centerPositionP1);
+        if (!Player2.IsHolding)
+            ApplyBoundries(Player2.transform, radiusP2, centerPositionP2);
     }
 
     private void ApplyBoundries(Transform target, float radius, Vector3 center)
@@ -90,6 +97,18 @@ public class RadialRope : MonoBehaviour
         Vector3[] points = new Vector3[] { Player1.transform.position + Vector3.up * offsetY, ankerPlayer1.position, ankerPlayer2.position, Player2.transform.position + Vector3.up * offsetY };
         _lr.positionCount = points.Length;
         _lr.SetPositions(points);
+    }
+
+    public bool IsOtherHolding(int playerNumber)
+    {
+        if (playerNumber == 1)
+        {
+            return Player2.IsHolding;
+        }
+        else
+        {
+            return Player1.IsHolding;
+        }
     }
 
     public void SetAnker(int playerNumber, Transform anker)
