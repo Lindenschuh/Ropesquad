@@ -81,7 +81,11 @@ public class PlayerControlls : MonoBehaviour
             else
             {
                 IsAnchord = false;
-                Anchor = null;
+                if (Anchor != null)
+                {
+                    DestroyImmediate(Anchor.gameObject);
+                    Anchor = null;
+                }
             }
             Rope.SetAnker(PlayerNumber, Anchor);
         }

@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+[RequireComponent(typeof(LineRenderer))]
 public class RadialRope : MonoBehaviour
 {
     public float Radius;
@@ -20,55 +21,52 @@ public class RadialRope : MonoBehaviour
     private Transform ankerPlayer1;
     private Transform ankerPlayer2;
 
-    public void BoundTransform(PlayerControlls player)
+    private LineRenderer _lr;
+
+    private void Start()
     {
-        if (ankerPlayer1 != null && ankerPlayer2 != null)
-        {
-            avdPl1 = (Player1.transform.position - ankerPlayer1.position).magnitude;
-            subDist = (ankerPlayer1.position - ankerPlayer2.position).magnitude;
-            avdPl2 = (Player2.transform.position - ankerPlayer2.position).magnitude;
-
-            if (player == Player1)
-            {
-                HandlePlayerOnePosition();
-            }
-            else
-            {
-                HandlePlayerTwoPosition();
-            }
-        }
-        else
-        {
-            Vector3 centerPosition;
-            float localRadius;
-            if (!player.IsAnchord)
-            {
-                centerPosition = transform.localPosition - Vector3.up * offsetY;
-                localRadius = Radius;
-            }
-            else
-            {
-                centerPosition = player.transform.position - ((player.transform.position - player.Anchor.position) / 2);
-                localRadius = 5f;
-            }
-
-            float distance = Vector3.Distance(player.transform.position, centerPosition);
-
-            if (distance > localRadius)
-            {
-                Vector3 fromOriginToObject = player.transform.position - centerPosition;
-                fromOriginToObject *= localRadius / distance;
-                player.transform.position = centerPosition + fromOriginToObject;
-            }
-        }
+        _lr = GetComponent<LineRenderer>();
     }
 
-    private void HandlePlayerOnePosition()
+    public void BoundTransform()
     {
+        if (ankerPlayer1 == null)
+            ankerPlayer1 = transform;
+        if (ankerPlayer2 == null)
+            ankerPlayer2 = transform;
+
+        Vector3 positionP1 = Player1.transform.position + Vector3.up * offsetY;
+        Vector3 positionP2 = Player2.transform.position + Vector3.up * offsetY;
+
+        avdPl1 = (positionP1 - ankerPlayer1.position).magnitude;
+        subDist = (ankerPlayer1.position - ankerPlayer2.position).magnitude;
+        avdPl2 = (positionP2 - ankerPlayer2.position).magnitude;
+
+        float fullDistance = Radius * 2;
+        float remainingDistance = fullDistance - subDist;
+        float availableDistance = remainingDistance - avdPl1 - avdPl1;
+
+        float radiusP1 = (avdPl1 + availableDistance / 2) / 2;
+        float radiusP2 = (avdPl2 + availableDistance / 2) / 2;
+
+        Vector3 centerPositionP1 = positionP1 - ((positionP1 - ankerPlayer1.position) / 2);
+        Vector3 centerPositionP2 = positionP2 - ((positionP2 - ankerPlayer2.position) / 2);
+
+        ApplyBoundries(Player1.transform, radiusP1, centerPositionP1);
+        ApplyBoundries(Player2.transform, radiusP2, centerPositionP2);
     }
 
-    private void HandlePlayerTwoPosition()
+    private void ApplyBoundries(Transform target, float radius, Vector3 center)
     {
+        center = center - Vector3.up * offsetY;
+        float distance = Vector3.Distance(target.position, center);
+
+        if (distance > radius)
+        {
+            Vector3 fromOriginToObject = target.position - center;
+            fromOriginToObject *= radius / distance;
+            target.position = center + fromOriginToObject;
+        }
     }
 
     public void changeRopeLength(float deltaLength)
@@ -83,8 +81,15 @@ public class RadialRope : MonoBehaviour
             (Player1.transform.position - Player2.transform.position) / 2)
             + Vector3.up * offsetY;
 
-        BoundTransform(Player1);
-        BoundTransform(Player2);
+        BoundTransform();
+        drawLine();
+    }
+
+    private void drawLine()
+    {
+        Vector3[] points = new Vector3[] { Player1.transform.position + Vector3.up * offsetY, ankerPlayer1.position, ankerPlayer2.position, Player2.transform.position + Vector3.up * offsetY };
+        _lr.positionCount = points.Length;
+        _lr.SetPositions(points);
     }
 
     public void SetAnker(int playerNumber, Transform anker)
