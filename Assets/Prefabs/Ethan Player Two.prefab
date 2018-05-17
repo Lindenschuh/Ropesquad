@@ -2482,12 +2482,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   TowerObject: {fileID: 0}
   CharacterOffset: 5
-  CameraOffset: 10
+  CameraOffset: 6.28
   PlayerNumber: 2
   Rope: {fileID: 0}
   WalkSpeed: 2
   Gravity: 12
-  JumpHeight: 1
+  JumpHeight: 5
   PlayerLookOffset: 90
   AirControlPercentage: 0
 --- !u!137 &137061468396560656
@@ -2564,7 +2564,7 @@ SkinnedMeshRenderer:
   m_ReflectionProbeUsage: 1
   m_RenderingLayerMask: 4294967295
   m_Materials:
-  - {fileID: 2100000, guid: 6cb4a2c2389ec614584afdb8bb1f1cb9, type: 2}
+  - {fileID: 2100000, guid: 3a5999c63f369414da28d4cde6955579, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0

@@ -29,11 +29,11 @@ public class PlayerControlls : MonoBehaviour
     public float AirControlPercentage;
 
     private float lookDir = 0;
-    private float velocityY;
+    public float velocityY;
     private float currentSpeed;
     private JoystickManager _joyManager;
     private CharacterController characterController;
-    private Animator animator;
+    private Animator _animator;
 
     private float speedSmothvelocity;
 
@@ -41,7 +41,7 @@ public class PlayerControlls : MonoBehaviour
     {
         characterController = GetComponent<CharacterController>();
         _joyManager = new JoystickManager(PlayerNumber);
-        animator = GetComponent<Animator>();
+        _animator = GetComponent<Animator>();
     }
 
     // Update is called once per frame
@@ -98,11 +98,24 @@ public class PlayerControlls : MonoBehaviour
         if (characterController.isGrounded)
         {
             velocityY = 0;
-            animator.SetBool("jumping", false);
         }
 
-        animator.SetFloat("walkSpeed", Mathf.Abs(h));
-        animator.SetFloat("jumpValue", velocityY / JumpHeight);
+        UpdateAnimator(Mathf.Abs(h), characterController.isGrounded);
+    }
+
+    private void UpdateAnimator(float input, bool grounded)
+    {
+        _animator.SetFloat("WalkSpeed", input, 0.1f, Time.fixedDeltaTime);
+        _animator.SetBool("OnGround", grounded);
+        if (!grounded)
+        {
+            _animator.SetFloat("Jump", velocityY);
+        }
+
+        if (velocityY == 0)
+        {
+            _animator.SetFloat("Jump", velocityY);
+        }
     }
 
     private void Jumping()
@@ -111,7 +124,6 @@ public class PlayerControlls : MonoBehaviour
         {
             float jumpVelocity = Mathf.Sqrt(2 * Gravity * JumpHeight);
             velocityY = jumpVelocity;
-            animator.SetBool("jumping", true);
         }
     }
 

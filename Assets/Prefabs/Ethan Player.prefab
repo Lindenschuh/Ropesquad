@@ -2504,7 +2504,7 @@ MonoBehaviour:
   Rope: {fileID: 0}
   WalkSpeed: 2
   Gravity: 12
-  JumpHeight: 1
+  JumpHeight: 5
   PlayerLookOffset: 90
   AirControlPercentage: 0
 --- !u!137 &137573457682838378
@@ -2522,7 +2522,7 @@ SkinnedMeshRenderer:
   m_ReflectionProbeUsage: 1
   m_RenderingLayerMask: 4294967295
   m_Materials:
-  - {fileID: 2100000, guid: 234594c6173420245a87bca1bdcd3ac4, type: 2}
+  - {fileID: 2100000, guid: 9ff39a450f75a2e4d9c43368bc7f9fe6, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
