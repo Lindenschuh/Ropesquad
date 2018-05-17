@@ -6,13 +6,13 @@ public class CameraController : MonoBehaviour
 {
     public Transform Tower;
 
-    public RopeController Rope;
+    public Transform Rope;
 
     public float CameraOffset;
 
     private void LateUpdate()
     {
-        var ropePosition = Rope.GetComponent<LineRenderer>().bounds.center;
+        var ropePosition = Rope.position;
 
         var towerCenter = new Vector3(Tower.position.x, ropePosition.y * 2, Tower.position.z);
 

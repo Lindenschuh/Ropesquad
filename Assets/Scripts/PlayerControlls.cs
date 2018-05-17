@@ -17,13 +17,17 @@ public class PlayerControlls : MonoBehaviour
     public float CameraOffset = 10;
     public byte PlayerNumber;
 
-    public RopeController Rope;
+    //public RopeController Rope;
+    public RadialRope Rope;
 
     public float WalkSpeed = 2;
     public float Gravity = 12;
     public float JumpHeight = 1;
 
     public float PlayerLookOffset = 0;
+
+    public bool IsAnchord;
+    public Transform Anchor { get; private set; }
 
     [Range(0, 1)]
     public float AirControlPercentage;
@@ -37,19 +41,49 @@ public class PlayerControlls : MonoBehaviour
 
     private float speedSmothvelocity;
 
+    private int _playerLayer;
+
     private void Start()
     {
         characterController = GetComponent<CharacterController>();
         _joyManager = new JoystickManager(PlayerNumber);
         _animator = GetComponent<Animator>();
+        _playerLayer = LayerMask.NameToLayer("Player");
     }
 
     // Update is called once per frame
     private void FixedUpdate()
     {
         RopeInteraction();
+        AnchorCheck();
         Movement();
         Jumping();
+    }
+
+    private void AnchorCheck()
+    {
+        var offsetedPosition = transform.position + Vector3.up * Rope.offsetY;
+        RaycastHit hit;
+        Debug.DrawRay(offsetedPosition, (Rope.transform.position - offsetedPosition).normalized * (Rope.Radius * 2));
+        if (Physics.Raycast(offsetedPosition, (Rope.transform.position - offsetedPosition).normalized, out hit, Rope.Radius * 2))
+        {
+            var hitObj = hit.collider.gameObject;
+            if (hitObj.layer != _playerLayer)
+            {
+                if (!IsAnchord)
+                {
+                    Anchor = new GameObject().transform;
+                    Anchor.position = hit.point;
+                    Anchor.parent = hitObj.transform;
+                }
+                IsAnchord = true;
+            }
+            else
+            {
+                IsAnchord = false;
+                Anchor = null;
+            }
+        }
     }
 
     private void RopeInteraction()
@@ -57,12 +91,12 @@ public class PlayerControlls : MonoBehaviour
         // Einziehen
         if (_joyManager.CheckButton(JoystickButton.BUMPER_L, Input.GetButton))
         {
-            Rope.UpdateWinch(Rope.RopeLength - Rope.WinchSpeed * Time.fixedDeltaTime, TowerObject.transform.position, TowerObject.Radius, PlayerNumber);
+            Rope.changeRopeLength(-1f * Time.fixedDeltaTime);
         }
         // Seil lassen;
         if (_joyManager.CheckButton(JoystickButton.BUMPER_R, Input.GetButton))
         {
-            Rope.UpdateWinch(Rope.RopeLength + Rope.WinchSpeed * Time.fixedDeltaTime, TowerObject.transform.position, TowerObject.Radius, PlayerNumber);
+            Rope.changeRopeLength(1f * Time.fixedDeltaTime);
         }
     }
 
@@ -79,21 +113,6 @@ public class PlayerControlls : MonoBehaviour
         velocityY -= Gravity * Time.fixedDeltaTime;
 
         characterController.Move(new Vector3(0, velocityY, 0) * Time.fixedDeltaTime);
-
-        if (!Rope.CheckNewPosition(transform.position, PlayerNumber))
-        {
-            if (velocityY <= 0)
-            {
-                transform.position = new Vector3(oldPosition.x, transform.position.y, oldPosition.z);
-            }
-            else
-            {
-                transform.position = oldPosition;
-                velocityY = 0;
-            }
-
-            transform.rotation = oldRotation;
-        }
 
         if (characterController.isGrounded)
         {
