@@ -121,7 +121,17 @@ public class PlayerControlls : MonoBehaviour
             currentSpeed = Mathf.SmoothDamp(currentSpeed, WalkSpeed, ref speedSmothvelocity, GetModifiedSmoothTime(SPEED_SMOTH_TIME));
             MovementManger.NextPosition(transform, h, currentSpeed, TowerObject, Tower.CharacterLayer, ref lookDir, PlayerLookOffset);
 
-            if (!characterController.isGrounded && IsAnchord || !characterController.isGrounded && Rope.IsOtherHolding(PlayerNumber))
+            bool isAboveMid = false;
+            if (IsAnchord)
+            {
+                isAboveMid = Anchor.position.y < (transform.position.y + Rope.offsetY);
+            }
+            else
+            {
+                isAboveMid = Rope.transform.position.y < (transform.position.y + Rope.offsetY);
+            }
+
+            if (!characterController.isGrounded && IsAnchord && !isAboveMid || !characterController.isGrounded && Rope.IsOtherHolding(PlayerNumber) && !isAboveMid)
             {
                 velocityY = Mathf.Clamp(velocityY - Gravity * Time.fixedDeltaTime, MinV, MaxV);
                 velocityY = Mathf.Clamp(velocityY + v * UpForce * Time.fixedDeltaTime, MinV, MaxV);
