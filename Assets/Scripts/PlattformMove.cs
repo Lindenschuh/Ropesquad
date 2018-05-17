@@ -32,10 +32,12 @@ namespace Movement
         private Transform target;
 
         private float approcheRadius;
+        private int playerLayer;
 
         private void Start()
         {
             MovementManger.SnapToGrid(transform, GameTower, Tower.CharacterLayer);
+            playerLayer = LayerMask.NameToLayer("Player");
 
             if (Direction != MoveDir.NONE)
             {
@@ -110,7 +112,7 @@ namespace Movement
 
         private void OnTriggerEnter(Collider other)
         {
-            if (other.gameObject.layer == LayerMask.NameToLayer("Player"))
+            if (other.gameObject.layer == playerLayer)
             {
                 other.transform.parent = gameObject.transform;
             }
@@ -118,7 +120,7 @@ namespace Movement
 
         private void OnTriggerExit(Collider other)
         {
-            if (other.gameObject.layer == LayerMask.NameToLayer("Player"))
+            if (other.gameObject.layer == playerLayer)
             {
                 other.transform.parent = null;
             }

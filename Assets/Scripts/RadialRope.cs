@@ -76,12 +76,11 @@ public class RadialRope : MonoBehaviour
         }
     }
 
-    public void changeRopeLength(float deltaLength)
+    public void ChangeRopeLength(float deltaLength)
     {
         Radius = Mathf.Clamp(Radius + deltaLength, MinRadius, MaxRadius);
     }
 
-    // Update is called once per frame
     private void FixedUpdate()
     {
         transform.position = (Player1.transform.position -
@@ -89,10 +88,10 @@ public class RadialRope : MonoBehaviour
             + Vector3.up * offsetY;
 
         BoundTransform();
-        drawLine();
+        DrawLine();
     }
 
-    private void drawLine()
+    private void DrawLine()
     {
         Vector3[] points = new Vector3[] { Player1.transform.position + Vector3.up * offsetY, ankerPlayer1.position, ankerPlayer2.position, Player2.transform.position + Vector3.up * offsetY };
         _lr.positionCount = points.Length;

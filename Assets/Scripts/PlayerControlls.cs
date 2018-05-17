@@ -10,20 +10,17 @@ public class PlayerControlls : MonoBehaviour
 {
     private static float SPEED_SMOTH_TIME = .1f;
 
-    // Use this for initialization
     public Tower TowerObject;
 
-    public float CharacterOffset = 5f;
-    public float CameraOffset = 10;
     public byte PlayerNumber;
-    public float UpForce = 1f;
+    public float UpForce = 25f;
 
-    //public RopeController Rope;
     public RadialRope Rope;
 
-    public float WalkSpeed = 2;
-    public float Gravity = 12;
-    public float JumpHeight = 1;
+    public float WalkSpeed = 2f;
+    public float Gravity = 12f;
+    public float JumpHeight = 1f;
+    public float Ropifcator = 1f;
 
     public float PlayerLookOffset = 0;
 
@@ -98,15 +95,14 @@ public class PlayerControlls : MonoBehaviour
 
     private void RopeInteraction()
     {
-        // Einziehen
         if (_joyManager.CheckButton(JoystickButton.BUMPER_L, Input.GetButton))
         {
-            Rope.changeRopeLength(-1f * Time.fixedDeltaTime);
+            Rope.ChangeRopeLength(-Ropifcator * Time.fixedDeltaTime);
         }
-        // Seil lassen;
+
         if (_joyManager.CheckButton(JoystickButton.BUMPER_R, Input.GetButton))
         {
-            Rope.changeRopeLength(1f * Time.fixedDeltaTime);
+            Rope.ChangeRopeLength(Ropifcator * Time.fixedDeltaTime);
         }
     }
 
@@ -118,7 +114,7 @@ public class PlayerControlls : MonoBehaviour
 
         if (!IsHolding)
         {
-            currentSpeed = Mathf.SmoothDamp(currentSpeed, WalkSpeed, ref speedSmothvelocity, GetModifiedSmoothTime(SPEED_SMOTH_TIME));
+            currentSpeed = Mathf.SmoothDamp(currentSpeed, WalkSpeed, ref speedSmothvelocity, SPEED_SMOTH_TIME);
             MovementManger.NextPosition(transform, h, currentSpeed, TowerObject, Tower.CharacterLayer, ref lookDir, PlayerLookOffset);
 
             bool isAboveMid = false;
@@ -163,7 +159,7 @@ public class PlayerControlls : MonoBehaviour
 
         if (velocityY == 0)
         {
-            _animator.SetFloat("Jump", velocityY);
+            _animator.SetFloat("Jump", 0);
         }
     }
 
@@ -176,14 +172,8 @@ public class PlayerControlls : MonoBehaviour
         }
     }
 
-    private float GetModifiedSmoothTime(float smoothTime)
+    private void OnControllerColliderHit(ControllerColliderHit hit)
     {
-        if (characterController.isGrounded)
-            return smoothTime;
-
-        if (AirControlPercentage == 0)
-            return float.MaxValue;
-
-        return smoothTime / AirControlPercentage;
+        velocityY = 0;
     }
 }
