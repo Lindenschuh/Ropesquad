@@ -142,12 +142,13 @@ public class PlayerControlls : MonoBehaviour
             }
 
             characterController.Move(new Vector3(0, velocityY, 0) * Time.fixedDeltaTime);
-
-            if (characterController.isGrounded)
-            {
-                velocityY = 0;
-            }
         }
+
+        if (characterController.isGrounded || IsHolding)
+        {
+            velocityY = 0;
+        }
+
         UpdateAnimator(Mathf.Abs(h), characterController.isGrounded);
     }
 

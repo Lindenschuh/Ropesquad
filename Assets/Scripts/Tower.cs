@@ -6,7 +6,7 @@ public class Tower : MonoBehaviour
 {
     public float Radius { get; private set; }
 
-    public const float CharacterLayer = 5f;
+    public const float CharacterLayer = 2f;
     public const float CameraLayer = 10f;
 
     private void Awake()
