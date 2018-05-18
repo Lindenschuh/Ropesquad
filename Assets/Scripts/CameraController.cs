@@ -16,7 +16,7 @@ public class CameraController : MonoBehaviour
     {
         var ropePosition = Rope.transform.position;
 
-        var towerCenter = new Vector3(Tower.position.x, ropePosition.y * 2, Tower.position.z);
+        var towerCenter = new Vector3(Tower.position.x, ropePosition.y, Tower.position.z);
 
         var dynamicOffset = Mathf.Min(MinOffset + (Rope.Player1.transform.position - Rope.Player2.transform.position).magnitude, MaxOffset);
 

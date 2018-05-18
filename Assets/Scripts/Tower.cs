@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+[ExecuteInEditMode]
 public class Tower : MonoBehaviour
 {
     public float Radius { get; private set; }

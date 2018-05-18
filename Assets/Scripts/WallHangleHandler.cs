@@ -8,11 +8,16 @@ public class WallHangleHandler : MonoBehaviour
 
     private int _playerLayer;
 
-    void Start()
+    private void Start()
     {
-        MovementManger.SnapToGrid(transform, GameTower, Tower.CharacterLayer);
         _playerLayer = LayerMask.NameToLayer("Player");
     }
+
+    private void FixedUpdate()
+    {
+        MovementManger.SnapToGrid(transform, GameTower, Tower.CharacterLayer);
+    }
+
     private void OnTriggerEnter(Collider other)
     {
         if (other.gameObject.layer == _playerLayer)

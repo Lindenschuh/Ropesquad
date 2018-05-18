@@ -8,10 +8,14 @@ public class HandelHandler : MonoBehaviour
 
     private int _playerLayer;
 
-    void Start()
+    private void Start()
+    {
+        _playerLayer = LayerMask.NameToLayer("Player");
+    }
+
+    private void FixedUpdate()
     {
         MovementManger.SnapToGrid(transform.parent.transform, GameTower, Tower.CharacterLayer);
-        _playerLayer = LayerMask.NameToLayer("Player");
     }
 
     private void OnTriggerEnter(Collider other)
